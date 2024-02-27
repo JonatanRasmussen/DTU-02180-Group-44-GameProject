@@ -52,4 +52,5 @@ local_settings.py
 /.venv
 
 # Temporary code runner files
+tempCodeRunnerFile.py
 __pycache__/
