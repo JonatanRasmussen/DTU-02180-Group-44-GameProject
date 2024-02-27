@@ -5,6 +5,7 @@ import copy
 
 # Pip-installed modules
 import chess # pip install chess
+from chess import InvalidMoveError
 
 
 def play_chess(white, black):
@@ -16,7 +17,7 @@ def play_chess(white, black):
     while not board.is_game_over():
         print("\n"+f"{board}")
         time.sleep(1) # Pause program briefly to give the illusion of the AI's "thinking"
-        if (board.turn == chess.WHITE):
+        if board.turn == chess.WHITE:
             move = make_move(board, white)
             print("\n"+f"White moved: '{move}'")
         else:
@@ -43,7 +44,7 @@ def human_player(board):
                 return move
             else:
                 print("\n"+"Invalid move. Try again!")
-        except:
+        except InvalidMoveError:
             print("\n"+"Invalid input. Try again!")
 
 
