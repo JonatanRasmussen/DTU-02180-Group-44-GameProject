@@ -16,10 +16,10 @@ def minimax(board, depth, alpha, beta, maximizing_player):
         max_eval = float('-inf')
         for move in legal_moves:
             board.push(move)
-            eval = minimax(board, depth - 1, alpha, beta, False)
+            evaluate = minimax(board, depth - 1, alpha, beta, False)
             board.pop()
-            max_eval = max(max_eval, eval)
-            alpha = max(alpha, eval)
+            max_eval = max(max_eval, evaluate)
+            alpha = max(alpha, evaluate)
             if beta <= alpha:
                 break
         return max_eval
@@ -27,10 +27,10 @@ def minimax(board, depth, alpha, beta, maximizing_player):
         min_eval = float('inf')
         for move in legal_moves:
             board.push(move)
-            eval = minimax(board, depth - 1, alpha, beta, True)
+            evaluate = minimax(board, depth - 1, alpha, beta, True)
             board.pop()
-            min_eval = min(min_eval, eval)
-            beta = min(beta, eval)
+            min_eval = min(min_eval, evaluate)
+            beta = min(beta, evaluate)
             if beta <= alpha:
                 break
         return min_eval
@@ -42,30 +42,30 @@ def find_best_move(board, depth):
     beta = float('inf')
     for move in board.legal_moves:
         board.push(move)
-        eval = minimax(board, depth - 1, alpha, beta, False)
+        evaluation = minimax(board, depth - 1, alpha, beta, False)
         board.pop()
-        if eval > max_eval:
-            max_eval = eval
+        if evaluation > max_eval:
+            max_eval = evaluation
             best_move = move
     return best_move
 
 
 # Initialize chess board
-board = chess.Board()
-print(board)
+chessboard = chess.Board()
+print(chessboard)
 print("\n")
 
 # Do some moves to generate a position
-board.push_san("e4")
-board.push_san("e5")
-board.push_san("Qh5")
-board.push_san("Nc6")
-board.push_san("Bc4")
+chessboard.push_san("e4")
+chessboard.push_san("e5")
+chessboard.push_san("Qh5")
+chessboard.push_san("Nc6")
+chessboard.push_san("Bc4")
 
-print("Current turn:", "White" if board.turn == chess.WHITE else "Black")
-print(board)
+print("Current turn:", "White" if chessboard.turn == chess.WHITE else "Black")
+print(chessboard)
 
 
-best_move = find_best_move(board, 5)
-print("Best move:", best_move)
+the_best_move = find_best_move(chessboard, 5)
+print("Best move:", the_best_move)
 # print(board.legal_moves.count())

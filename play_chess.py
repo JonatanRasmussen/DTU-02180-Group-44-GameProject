@@ -6,9 +6,9 @@ import copy
 # Pip-installed modules
 import chess # pip install chess
 from chess import InvalidMoveError
+from ChessAI import find_best_move
 
-
-def play_chess(white, black):
+def play_chess(white, black, sleeptimer):
     # Playing chess using the library https://python-chess.readthedocs.io
     print("Welcome to Group 44's Chess Game!")
     print(f"White is played by the algorithm {white.__name__}.")
@@ -16,7 +16,7 @@ def play_chess(white, black):
     board = chess.Board()
     while not board.is_game_over():
         print("\n"+f"{board}")
-        time.sleep(1) # Pause program briefly to give the illusion of the AI's "thinking"
+        time.sleep(sleeptimer) # Pause program briefly to give the illusion of the AI's "thinking"
         if board.turn == chess.WHITE:
             move = make_move(board, white)
             print("\n"+f"White moved: '{move}'")
@@ -30,8 +30,13 @@ def make_move(board, algorithm):
     # Makes 'algorithm' carry out a chess move on 'board'
     copy_of_board = copy.deepcopy(board) # Make copy so 'algorithm' can safely altar board state
     move = algorithm(copy_of_board)      # ask 'algorithm' to provide its move
+    print("test")
     board.push(move)                     # it's assumed that a legal move was privided
     return move
+
+
+def chess_ai_depth_5(board):
+    return find_best_move(board, 5)
 
 
 def human_player(board):
@@ -77,7 +82,8 @@ def ai_rush_b(board):
 
 
 if __name__ == "__main__":
-    white_algorithm = human_player
+    white_algorithm = ai_random_move
     # white_algorithm = ai_rush_b
-    black_algorithm = ai_random_move
-    play_chess(white_algorithm, black_algorithm)
+    black_algorithm = chess_ai_depth_5
+    sleep_time = 1
+    play_chess(white_algorithm, black_algorithm, sleep_time)
