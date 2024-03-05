@@ -50,22 +50,23 @@ def find_best_move(board, depth):
     return best_move
 
 
-# Initialize chess board
-chessboard = chess.Board()
-print(chessboard)
-print("\n")
+if __name__ == "__main__":
+    # Initialize chess board
+    chessboard = chess.Board()
+    print(chessboard)
+    print("\n")
 
-# Do some moves to generate a position
-chessboard.push_san("e4")
-chessboard.push_san("e5")
-chessboard.push_san("Qh5")
-chessboard.push_san("Nc6")
-chessboard.push_san("Bc4")
+    # Do some moves to generate a position
+    chessboard.push_san("e4")
+    chessboard.push_san("e5")
+    chessboard.push_san("Qh5")
+    chessboard.push_san("Nc6")
+    chessboard.push_san("Bc4")
 
-print("Current turn:", "White" if chessboard.turn == chess.WHITE else "Black")
-print(chessboard)
+    print("Current turn:", "White" if chessboard.turn == chess.WHITE else "Black")
+    print(chessboard)
 
 
-the_best_move = find_best_move(chessboard, 5)
-print("Best move:", the_best_move)
-# print(board.legal_moves.count())
+    the_best_move = find_best_move(chessboard, 5)
+    print("Best move:", the_best_move)
+    # print(board.legal_moves.count())

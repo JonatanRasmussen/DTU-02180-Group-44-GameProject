@@ -30,12 +30,14 @@ def make_move(board, algorithm):
     # Makes 'algorithm' carry out a chess move on 'board'
     copy_of_board = copy.deepcopy(board) # Make copy so 'algorithm' can safely altar board state
     move = algorithm(copy_of_board)      # ask 'algorithm' to provide its move
-    print("test")
     board.push(move)                     # it's assumed that a legal move was privided
     return move
 
 
-def chess_ai_depth_5(board):
+def chess_ai_depth_5_playing_as_white(board):
+    return find_best_move(board, 5)
+
+def chess_ai_depth_5_playing_as_black(board):
     return find_best_move(board, 5)
 
 
@@ -82,8 +84,7 @@ def ai_rush_b(board):
 
 
 if __name__ == "__main__":
-    white_algorithm = ai_random_move
-    # white_algorithm = ai_rush_b
-    black_algorithm = chess_ai_depth_5
-    sleep_time = 1
+    white_algorithm = chess_ai_depth_5_playing_as_white
+    black_algorithm = ai_random_move
+    sleep_time = 0.1
     play_chess(white_algorithm, black_algorithm, sleep_time)
