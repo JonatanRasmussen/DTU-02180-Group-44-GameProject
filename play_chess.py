@@ -37,14 +37,12 @@ def make_move(board, algorithm):
 def chess_ai_playing_as_white_depth_4(board):
     depths = 4
     playing_as_white = True
-    print_each_move_evaluation = True
-    return find_best_move(board, depths, playing_as_white, print_each_move_evaluation)
+    return find_best_move(board, depths, playing_as_white)
 
 def chess_ai_playing_as_black_depth_4(board):
     depths = 4
     playing_as_white = False
-    print_each_move_evaluation = True
-    return find_best_move(board, depths, playing_as_white, print_each_move_evaluation)
+    return find_best_move(board, depths, playing_as_white)
 
 
 def human_player(board):
@@ -90,8 +88,8 @@ def ai_rush_b(board):
 
 
 if __name__ == "__main__":
-    white_algorithm = ai_random_move
+    white_algorithm = chess_ai_playing_as_white_depth_4
     black_algorithm = chess_ai_playing_as_black_depth_4
-    sleep_time = 0.1
+    sleep_time = 0
 
     play_chess(white_algorithm, black_algorithm, sleep_time)

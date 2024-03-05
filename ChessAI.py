@@ -55,7 +55,7 @@ def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
                 break
         return min_eval
 
-def find_best_move(board, depth, playing_as_white, print_each_move_evaluation):
+def find_best_move(board, depth, playing_as_white):
     best_move = None
     max_eval = float('-inf')
     alpha = float('-inf')
@@ -69,8 +69,7 @@ def find_best_move(board, depth, playing_as_white, print_each_move_evaluation):
         if evaluation > max_eval:
             max_eval = evaluation
             best_move = move
-        if print_each_move_evaluation:
-            print_evaluation(evaluation, move, playing_as_white, index, len(list(board.legal_moves)))
+        print_evaluation(evaluation, move, playing_as_white, index, len(list(board.legal_moves)))
     return best_move
 
 def print_evaluation(evaluation, move, playing_as_white, move_index, total_moves):
@@ -99,6 +98,6 @@ if __name__ == "__main__":
 
     play_as_white = True
     print_each_move_eval = True
-    the_best_move = find_best_move(chessboard, 5, play_as_white, print_each_move_eval)
+    the_best_move = find_best_move(chessboard, 5, play_as_white)
     print("Best move:", the_best_move)
     # print(board.legal_moves.count())
