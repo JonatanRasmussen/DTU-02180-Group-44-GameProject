@@ -15,7 +15,7 @@ def play_chess(white, black, sleeptimer):
     print(f"Black is played by the algorithm {black.__name__}.")
     board = chess.Board()
     while not board.is_game_over():
-        print("\n"+f"{board}")
+        print("\n"+f"{board}"+"\n")
         time.sleep(sleeptimer) # Pause program briefly to give the illusion of the AI's "thinking"
         if board.turn == chess.WHITE:
             move = make_move(board, white)
@@ -34,11 +34,17 @@ def make_move(board, algorithm):
     return move
 
 
-def chess_ai_depth_5_playing_as_white(board):
-    return find_best_move(board, 5)
+def chess_ai_playing_as_white_depth_4(board):
+    depths = 4
+    playing_as_white = True
+    print_each_move_evaluation = True
+    return find_best_move(board, depths, playing_as_white, print_each_move_evaluation)
 
-def chess_ai_depth_5_playing_as_black(board):
-    return find_best_move(board, 5)
+def chess_ai_playing_as_black_depth_4(board):
+    depths = 4
+    playing_as_white = False
+    print_each_move_evaluation = True
+    return find_best_move(board, depths, playing_as_white, print_each_move_evaluation)
 
 
 def human_player(board):
@@ -84,7 +90,8 @@ def ai_rush_b(board):
 
 
 if __name__ == "__main__":
-    white_algorithm = chess_ai_depth_5_playing_as_white
-    black_algorithm = ai_random_move
+    white_algorithm = ai_random_move
+    black_algorithm = chess_ai_playing_as_black_depth_4
     sleep_time = 0.1
+
     play_chess(white_algorithm, black_algorithm, sleep_time)
