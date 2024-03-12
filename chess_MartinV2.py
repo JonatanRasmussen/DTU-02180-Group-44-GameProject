@@ -81,39 +81,39 @@ VALUE = {
 }
 
 def evaluate_board(board):
-        """
-        Evaluates the value of the board based on fixed piece valuations
-        """
-        utility = 0
-        for square in board.piece_map():
+    """
+    Evaluates the value of the board based on fixed piece valuations
+    """
+    utility = 0
+    for square in board.piece_map():
 
-            if board.color_at(square) == chess.WHITE:
-                utility += VALUE[board.piece_type_at(square)]
-                utility += PIECE_SQUARE[board.piece_type_at(square)][square]
-                utility += board.is_checkmate()*VALUE[chess.KING]
-            else:
-                utility -= VALUE[board.piece_type_at(square)]
-                utility -= list(reversed(PIECE_SQUARE[board.piece_type_at(square)]))[square]
-                utility -= board.is_checkmate()*VALUE[chess.KING]
+        if board.color_at(square) == chess.WHITE:
+            utility += VALUE[board.piece_type_at(square)]
+            utility += PIECE_SQUARE[board.piece_type_at(square)][square]
+            utility += board.is_checkmate()*VALUE[chess.KING]
+        else:
+            utility -= VALUE[board.piece_type_at(square)]
+            utility -= list(reversed(PIECE_SQUARE[board.piece_type_at(square)]))[square]
+            utility -= board.is_checkmate()*VALUE[chess.KING]
 
-        return utility
+    return utility
 
 def order_moves(board, maximizing_player):
     moves = board.legal_moves
     scored_moves = []
     for move in moves:
         score = 0
-       
+
         if board.is_capture(move) and not board.is_en_passant(move):
             score += 10 + (VALUE[board.piece_type_at(move.to_square)] - VALUE[board.piece_type_at(move.from_square)]) / 100
         if move.promotion:
             score += 800
-        
+
         if maximizing_player:
             score += PIECE_SQUARE[board.piece_type_at(move.from_square)][move.to_square] - PIECE_SQUARE[board.piece_type_at(move.from_square)][move.from_square]
         else:
             score += PIECE_SQUARE[board.piece_type_at(move.from_square)][63-move.to_square] - PIECE_SQUARE[board.piece_type_at(move.from_square)][63-move.from_square]
-        
+
         scored_moves.append((score, move))
 
     # Sort moves based on the scores in descending order
@@ -200,6 +200,6 @@ if __name__ == "__main__":
 
     play_as_white = True
     print_each_move_eval = True
-    the_best_move = find_best_move(chessboard, 5, play_as_white)
+    the_best_move = find_best_moveV2(chessboard, 5, play_as_white)
     print("Best move:", the_best_move)
     # print(board.legal_moves.count())

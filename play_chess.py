@@ -7,6 +7,7 @@ import copy
 import chess # pip install chess
 from chess import InvalidMoveError
 from ChessAI import find_best_move
+from chess_MartinV2 import find_best_moveV2
 
 def play_chess(white, black, sleeptimer):
     # Playing chess using the library https://python-chess.readthedocs.io
@@ -41,6 +42,16 @@ def chess_ai_playing_as_white_depth_4(board):
 
 def chess_ai_playing_as_black_depth_4(board):
     depths = 4
+    playing_as_white = False
+    return find_best_move(board, depths, playing_as_white)
+
+def martin_v2_ai_WHITE_d5(board):
+    depths = 5
+    playing_as_white = True
+    return find_best_moveV2(board, depths, playing_as_white)
+
+def martin_v2_ai_BLACK_d5(board):
+    depths = 5
     playing_as_white = False
     return find_best_move(board, depths, playing_as_white)
 
@@ -88,7 +99,7 @@ def ai_rush_b(board):
 
 
 if __name__ == "__main__":
-    white_algorithm = chess_ai_playing_as_white_depth_4
+    white_algorithm = martin_v2_ai_WHITE_d5
     black_algorithm = chess_ai_playing_as_black_depth_4
     sleep_time = 0
 
