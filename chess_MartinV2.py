@@ -80,35 +80,48 @@ VALUE = {
     chess.KING: 400000,
 }
 
+
 def evaluate_board(board):
         """
         Evaluates the value of the board based on fixed piece valuations
         """
-        utility = 0
-        for square in board.piece_map():
+        score = 0
+        # Giving value for checkmating and checking opponent
+        score += board.is_checkmate()*VALUE[chess.KING]   
+        score += board.is_check()*10  
 
-            if board.color_at(square) == chess.WHITE:
-                utility += VALUE[board.piece_type_at(square)]
-                utility += PIECE_SQUARE[board.piece_type_at(square)][square]
-                utility += board.is_checkmate()*VALUE[chess.KING]
+        piece_map = board.piece_map()
+        piece_type_at = board.piece_type_at
+        color_at = board.color_at
+        is_white = chess.WHITE
+
+        # Giving value to material left and placement on the board
+        for square in piece_map:
+            if color_at(square) == is_white:
+                score += VALUE[piece_type_at(square)]
+                score += PIECE_SQUARE[piece_type_at(square)][square]          
             else:
-                utility -= VALUE[board.piece_type_at(square)]
-                utility -= list(reversed(PIECE_SQUARE[board.piece_type_at(square)]))[square]
-                utility -= board.is_checkmate()*VALUE[chess.KING]
+                score -= VALUE[piece_type_at(square)]
+                score -= PIECE_SQUARE[piece_type_at(square)][63-square] 
+        return score
 
-        return utility
 
 def order_moves(board, maximizing_player):
     moves = board.legal_moves
     scored_moves = []
+
     for move in moves:
         score = 0
        
         if board.is_capture(move) and not board.is_en_passant(move):
             score += 10 + (VALUE[board.piece_type_at(move.to_square)] - VALUE[board.piece_type_at(move.from_square)]) / 100
+
         if move.promotion:
             score += 800
-        
+
+        if board.gives_check(move):
+            score += 10
+
         if maximizing_player:
             score += PIECE_SQUARE[board.piece_type_at(move.from_square)][move.to_square] - PIECE_SQUARE[board.piece_type_at(move.from_square)][move.from_square]
         else:
@@ -120,6 +133,7 @@ def order_moves(board, maximizing_player):
     scored_moves.sort(reverse=True, key=lambda x: x[0])
     return [move for _, move in scored_moves]
 
+
 def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
     global moveNumber
     if depth == 0 or board.is_game_over():
@@ -128,6 +142,7 @@ def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
     if maximizing_player:
         max_eval = float('-inf')
         moves = order_moves(board, False)
+
         for move in moves:
             board.push(move)
             evaluate = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
@@ -137,10 +152,13 @@ def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
             moveNumber += 1
             if beta <= alpha:
                 break
+
         return max_eval
+    
     else:
         min_eval = float('inf')
         moves = order_moves(board, True)
+
         for move in moves:
             board.push(move)
             evaluate = minimax(board, depth - 1, alpha, beta, True, playing_as_white)
@@ -150,9 +168,11 @@ def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
             moveNumber += 1
             if beta <= alpha:
                 break
+
         return min_eval
 
-def find_best_moveV2(board, depth, playing_as_white):
+
+def find_best_move_ordering(board, depth, playing_as_white):
     global moveNumber
     moveNumber = 0
     best_move = None
@@ -161,18 +181,21 @@ def find_best_moveV2(board, depth, playing_as_white):
     beta = float('inf')
     index = 0
     moves = order_moves(board, True)
+
     for move in moves:
         index += 1
         board.push(move)
         evaluation = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
         board.pop()
+
         if evaluation > max_eval:
             max_eval = evaluation
             best_move = move
-        print_evaluation(evaluation, move, playing_as_white, index, len(list(board.legal_moves)))
+
         moveNumber += 1
-    print(f"Number of moves: {moveNumber}")
+    print(f"Number of moves: {moveNumber}, best move: {best_move}, max eval: {max_eval}")
     return best_move
+
 
 def print_evaluation(evaluation, move, playing_as_white, move_index, total_moves):
     if playing_as_white:
@@ -180,26 +203,3 @@ def print_evaluation(evaluation, move, playing_as_white, move_index, total_moves
     else:
         player_name = "Black"
     print(f"({move_index}/{total_moves}) {player_name}'s move '{move}' evaluates to material gain = {evaluation}", end="\r")
-
-
-if __name__ == "__main__":
-    # Initialize chess board
-    chessboard = chess.Board()
-    print(chessboard)
-    print("\n")
-
-    # Do some moves to generate a position
-    chessboard.push_san("e4")
-    chessboard.push_san("e5")
-    chessboard.push_san("Qh5")
-    chessboard.push_san("Nc6")
-    chessboard.push_san("Bc4")
-
-    print("Current turn:", "White" if chessboard.turn == chess.WHITE else "Black")
-    print(chessboard)
-
-    play_as_white = True
-    print_each_move_eval = True
-    the_best_move = find_best_move(chessboard, 5, play_as_white)
-    print("Best move:", the_best_move)
-    # print(board.legal_moves.count())
