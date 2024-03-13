@@ -112,7 +112,7 @@ def order_moves(board, maximizing_player):
 
     for move in moves:
         score = 0
-       
+
         if board.is_capture(move) and not board.is_en_passant(move):
             score += 10 + (VALUE[board.piece_type_at(move.to_square)] - VALUE[board.piece_type_at(move.from_square)]) / 100
 
@@ -126,7 +126,7 @@ def order_moves(board, maximizing_player):
             score += PIECE_SQUARE[board.piece_type_at(move.from_square)][move.to_square] - PIECE_SQUARE[board.piece_type_at(move.from_square)][move.from_square]
         else:
             score += PIECE_SQUARE[board.piece_type_at(move.from_square)][63-move.to_square] - PIECE_SQUARE[board.piece_type_at(move.from_square)][63-move.from_square]
-        
+
         scored_moves.append((score, move))
 
     # Sort moves based on the scores in descending order

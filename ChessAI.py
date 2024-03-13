@@ -108,7 +108,15 @@ def evaluate_board(board):
 def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
     global moveNumber
     if depth == 0 or board.is_game_over():
-        return evaluate_board(board)
+        if board.is_checkmate():
+            if maximizing_player == playing_as_white:
+                return -9999  # Checkmate; worst score for player evaluating as white
+            else:
+                return 9999  # Checkmate; best score if not evaluating as white
+        elif board.is_stalemate() or board.is_insufficient_material() or board.can_claim_draw():
+            return 0  # Draw conditions
+        else:  # Unclear outcome, use the evaluation
+            return evaluate_board(board, playing_as_white)
 
     legal_moves = list(board.legal_moves)
     if maximizing_player:
@@ -116,6 +124,7 @@ def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
 
         for move in legal_moves:
             board.push(move)
+            evaluate = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
             evaluate = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
             board.pop()
             max_eval = max(max_eval, evaluate)
@@ -130,6 +139,7 @@ def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
 
         for move in legal_moves:
             board.push(move)
+            evaluate = minimax(board, depth - 1, alpha, beta, True, playing_as_white)
             evaluate = minimax(board, depth - 1, alpha, beta, True, playing_as_white)
             board.pop()
             min_eval = min(min_eval, evaluate)
@@ -152,7 +162,9 @@ def find_best_move_basic(board, depth, playing_as_white):
 
     for move in board.legal_moves:
         index += 1
+        index += 1
         board.push(move)
+        evaluation = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
         evaluation = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
         board.pop()
 
@@ -163,6 +175,13 @@ def find_best_move_basic(board, depth, playing_as_white):
         moveNumber += 1
     print(f"Number of moves: {moveNumber}, best move: {best_move}, max eval: {max_eval}")
     return best_move
+
+def print_evaluation(evaluation, move, playing_as_white, move_index, total_moves):
+    if playing_as_white:
+        player_name = "White"
+    else:
+        player_name = "Black"
+    print(f"({move_index}/{total_moves}) {player_name}'s move '{move}' evaluates to material gain = {evaluation}", end="\r")
 
 
 def print_evaluation(evaluation, move, playing_as_white, move_index, total_moves):

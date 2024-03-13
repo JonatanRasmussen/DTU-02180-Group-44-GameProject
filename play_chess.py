@@ -6,6 +6,7 @@ import copy
 # Pip-installed modules
 import chess # pip install chess
 from chess import InvalidMoveError
+<<<<<<< HEAD
 from ChessAI import find_best_move_basic
 from chess_MartinV2 import find_best_move_ordering
 from chessAIV3 import find_best_move_iterative
@@ -16,6 +17,10 @@ FEN_STRINGS = ['r4rk1/pp2bppp/3q4/2p1n3/3p4/1P3P2/1PP1B1PP/R1BQ1RK1 w - c6 0 16'
                'r1bq1rk1/pp3ppp/2nb4/2pN4/3p4/6P1/PPPP1PBP/R1BQ1RK1 w - - 3 11',
                '4r1k1/pq3ppp/4b3/2p5/3p1BP1/3P3P/PPn2PB1/2R3K1 w - - 0 23',
                '1rr1b1k1/q3bpp1/pp1ppnnp/8/2P1PP2/N1N1B1PP/PP3QBK/2RR4 w - - 2 20']
+=======
+from ChessAI import find_best_move
+from chess_MartinV2 import find_best_moveV2
+>>>>>>> 9ecd0e2fa6a1eaeb0cf51d05c91b942c133987c9
 
 def play_chess(white, black, sleeptimer):
     # Playing chess using the library https://python-chess.readthedocs.io
@@ -59,6 +64,7 @@ def make_move(board, algorithm):
     return move
 
 
+<<<<<<< HEAD
 def chess_ai_basic_white(board):
     depths = 4
     playing_as_white = True
@@ -88,6 +94,27 @@ def chess_ai_iterative_black(board):
     depths = 4
     playing_as_white = False
     return find_best_move_iterative(board, depths, playing_as_white)
+=======
+def chess_ai_playing_as_white_depth_4(board):
+    depths = 4
+    playing_as_white = True
+    return find_best_move(board, depths, playing_as_white)
+
+def chess_ai_playing_as_black_depth_4(board):
+    depths = 4
+    playing_as_white = False
+    return find_best_move(board, depths, playing_as_white)
+
+def martin_v2_ai_WHITE_d5(board):
+    depths = 5
+    playing_as_white = True
+    return find_best_moveV2(board, depths, playing_as_white)
+
+def martin_v2_ai_BLACK_d5(board):
+    depths = 5
+    playing_as_white = False
+    return find_best_move(board, depths, playing_as_white)
+>>>>>>> 9ecd0e2fa6a1eaeb0cf51d05c91b942c133987c9
 
 
 def human_player(board):
@@ -133,6 +160,7 @@ def ai_rush_b(board):
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     ######################### Chose white player ##############################
     # AIs:
     #white_algorithm = chess_ai_basic_white
@@ -155,3 +183,10 @@ if __name__ == "__main__":
 
     sleep_time = 0
     test_AI(white_algorithm, black_algorithm, sleep_time)
+=======
+    white_algorithm = martin_v2_ai_WHITE_d5
+    black_algorithm = chess_ai_playing_as_black_depth_4
+    sleep_time = 0
+
+    play_chess(white_algorithm, black_algorithm, sleep_time)
+>>>>>>> 9ecd0e2fa6a1eaeb0cf51d05c91b942c133987c9
