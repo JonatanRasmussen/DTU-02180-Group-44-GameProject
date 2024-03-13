@@ -6,10 +6,9 @@ import copy
 # Pip-installed modules
 import chess # pip install chess
 from chess import InvalidMoveError
-<<<<<<< HEAD
-from ChessAI import find_best_move_basic
-from chess_MartinV2 import find_best_move_ordering
-from chessAIV3 import find_best_move_iterative
+from ChessAIBasic import find_best_move_basic
+from chessAIOrdering import find_best_move_ordering
+from chessAIIterative import find_best_move_iterative
 
 
 FEN_STRINGS = ['r4rk1/pp2bppp/3q4/2p1n3/3p4/1P3P2/1PP1B1PP/R1BQ1RK1 w - c6 0 16',
@@ -17,10 +16,6 @@ FEN_STRINGS = ['r4rk1/pp2bppp/3q4/2p1n3/3p4/1P3P2/1PP1B1PP/R1BQ1RK1 w - c6 0 16'
                'r1bq1rk1/pp3ppp/2nb4/2pN4/3p4/6P1/PPPP1PBP/R1BQ1RK1 w - - 3 11',
                '4r1k1/pq3ppp/4b3/2p5/3p1BP1/3P3P/PPn2PB1/2R3K1 w - - 0 23',
                '1rr1b1k1/q3bpp1/pp1ppnnp/8/2P1PP2/N1N1B1PP/PP3QBK/2RR4 w - - 2 20']
-=======
-from ChessAI import find_best_move
-from chess_MartinV2 import find_best_moveV2
->>>>>>> 9ecd0e2fa6a1eaeb0cf51d05c91b942c133987c9
 
 def play_chess(white, black, sleeptimer):
     # Playing chess using the library https://python-chess.readthedocs.io
@@ -29,15 +24,18 @@ def play_chess(white, black, sleeptimer):
     print(f"Black is played by the algorithm {black.__name__}.")
     
     board = chess.Board()
+
     while not board.is_game_over():
         print("\n"+f"{board}"+"\n")
         time.sleep(sleeptimer) # Pause program briefly to give the illusion of the AI's "thinking"
+
         if board.turn == chess.WHITE:
             move = make_move(board, white)
             print("\n"+f"White moved: '{move}'")
         else:
             move = make_move(board, black)
             print("\n"+f"Black moved: '{move}'")
+
     print("\n"+f"Game Over! Results: {board.result()}")
     return board.result()
 
@@ -64,7 +62,6 @@ def make_move(board, algorithm):
     return move
 
 
-<<<<<<< HEAD
 def chess_ai_basic_white(board):
     depths = 4
     playing_as_white = True
@@ -94,27 +91,6 @@ def chess_ai_iterative_black(board):
     depths = 4
     playing_as_white = False
     return find_best_move_iterative(board, depths, playing_as_white)
-=======
-def chess_ai_playing_as_white_depth_4(board):
-    depths = 4
-    playing_as_white = True
-    return find_best_move(board, depths, playing_as_white)
-
-def chess_ai_playing_as_black_depth_4(board):
-    depths = 4
-    playing_as_white = False
-    return find_best_move(board, depths, playing_as_white)
-
-def martin_v2_ai_WHITE_d5(board):
-    depths = 5
-    playing_as_white = True
-    return find_best_moveV2(board, depths, playing_as_white)
-
-def martin_v2_ai_BLACK_d5(board):
-    depths = 5
-    playing_as_white = False
-    return find_best_move(board, depths, playing_as_white)
->>>>>>> 9ecd0e2fa6a1eaeb0cf51d05c91b942c133987c9
 
 
 def human_player(board):
@@ -138,29 +114,7 @@ def ai_random_move(board):
     return random_move
 
 
-def ai_rush_b(board):
-    # Makes the move that is the furthest towards the opponent's backline
-    legal_moves = list(board.legal_moves)
-    def destination_rank_as_white(move): # Sort moves based on distance to black's backline
-        return chess.square_rank(move.to_square)
-    def destination_rank_as_black(move): # Sort moves based on distance to white's backline
-        return 8 - chess.square_rank(move.to_square)
-    if board.turn == chess.WHITE:
-        sorted_moves = sorted(legal_moves, key=destination_rank_as_white, reverse=True)
-    else:
-        sorted_moves = sorted(legal_moves, key=destination_rank_as_black, reverse=True)
-    return sorted_moves[0]
-
-
-# For debugging, the fastest way to end a fresh chess game is:
-# f2f3 by White
-# e7e6 by Black
-# g2g4 by White
-# d8h4 by Black (checkmate, black won)
-
-
 if __name__ == "__main__":
-<<<<<<< HEAD
     ######################### Chose white player ##############################
     # AIs:
     #white_algorithm = chess_ai_basic_white
@@ -175,18 +129,11 @@ if __name__ == "__main__":
     # AIs:
     #black_algorithm = chess_ai_basic_black
     #black_algorithm = chess_ai_ordering_black
-    #black_algorithm = chess_ai_iterative_black
+    black_algorithm = chess_ai_iterative_black
     
     # Human or random:
-    black_algorithm = ai_random_move
+    #black_algorithm = ai_random_move
     #black_algorithm = human_player
 
     sleep_time = 0
-    test_AI(white_algorithm, black_algorithm, sleep_time)
-=======
-    white_algorithm = martin_v2_ai_WHITE_d5
-    black_algorithm = chess_ai_playing_as_black_depth_4
-    sleep_time = 0
-
     play_chess(white_algorithm, black_algorithm, sleep_time)
->>>>>>> 9ecd0e2fa6a1eaeb0cf51d05c91b942c133987c9

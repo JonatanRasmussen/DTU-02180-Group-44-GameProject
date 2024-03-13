@@ -125,7 +125,6 @@ def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
         for move in legal_moves:
             board.push(move)
             evaluate = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
-            evaluate = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
             board.pop()
             max_eval = max(max_eval, evaluate)
             alpha = max(alpha, evaluate)
@@ -139,7 +138,6 @@ def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
 
         for move in legal_moves:
             board.push(move)
-            evaluate = minimax(board, depth - 1, alpha, beta, True, playing_as_white)
             evaluate = minimax(board, depth - 1, alpha, beta, True, playing_as_white)
             board.pop()
             min_eval = min(min_eval, evaluate)
@@ -162,9 +160,7 @@ def find_best_move_basic(board, depth, playing_as_white):
 
     for move in board.legal_moves:
         index += 1
-        index += 1
         board.push(move)
-        evaluation = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
         evaluation = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
         board.pop()
 
