@@ -119,8 +119,8 @@ if __name__ == "__main__":
     ######################### Chose white player ##############################
     # AIs:
     #white_algorithm = chess_ai_basic_white
-    #white_algorithm = chess_ai_ordering_white
-    white_algorithm = chess_ai_iterative_white
+    white_algorithm = chess_ai_ordering_white
+    #white_algorithm = chess_ai_iterative_white
 
     # Human or random:
     #white_algorithm = ai_random_move
@@ -133,9 +133,9 @@ if __name__ == "__main__":
     #black_algorithm = chess_ai_iterative_black
     
     # Human or random:
-    black_algorithm = ai_random_move
-    #black_algorithm = human_player
+    #black_algorithm = ai_random_move
+    black_algorithm = human_player
 
     sleep_time = 0
-    #play_chess(white_algorithm, black_algorithm, sleep_time)
-    test_AI(white_algorithm, black_algorithm, sleep_time)
+    play_chess(white_algorithm, black_algorithm, sleep_time)
+    #test_AI(white_algorithm, black_algorithm, sleep_time)
