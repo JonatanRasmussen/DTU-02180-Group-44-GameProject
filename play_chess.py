@@ -9,6 +9,7 @@ from chess import InvalidMoveError
 from ChessAIBasic import find_best_move_basic
 from chessAIOrdering import find_best_move_ordering
 from chessAIIterative import find_best_move_iterative
+#from IT2 import find_best_move_iterative
 
 
 FEN_STRINGS = ['r4rk1/pp2bppp/3q4/2p1n3/3p4/1P3P2/1PP1B1PP/R1BQ1RK1 w - c6 0 16',
@@ -129,11 +130,12 @@ if __name__ == "__main__":
     # AIs:
     #black_algorithm = chess_ai_basic_black
     #black_algorithm = chess_ai_ordering_black
-    black_algorithm = chess_ai_iterative_black
+    #black_algorithm = chess_ai_iterative_black
     
     # Human or random:
-    #black_algorithm = ai_random_move
+    black_algorithm = ai_random_move
     #black_algorithm = human_player
 
     sleep_time = 0
-    play_chess(white_algorithm, black_algorithm, sleep_time)
+    #play_chess(white_algorithm, black_algorithm, sleep_time)
+    test_AI(white_algorithm, black_algorithm, sleep_time)

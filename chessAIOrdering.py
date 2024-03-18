@@ -81,7 +81,7 @@ VALUE = {
 }
 
 
-def evaluate_board(board):
+def evaluate_board(board, playing_as_white):
         """
         Evaluates the value of the board based on fixed piece valuations
         """
@@ -95,6 +95,7 @@ def evaluate_board(board):
         color_at = board.color_at
         is_white = chess.WHITE
 
+        color_correction = 1 if playing_as_white else -1
         # Giving value to material left and placement on the board
         for square in piece_map:
             if color_at(square) == is_white:
@@ -103,7 +104,7 @@ def evaluate_board(board):
             else:
                 score -= VALUE[piece_type_at(square)]
                 score -= PIECE_SQUARE[piece_type_at(square)][63-square] 
-        return score
+        return color_correction * score
 
 
 def order_moves(board, maximizing_player):
@@ -137,7 +138,7 @@ def order_moves(board, maximizing_player):
 def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
     global moveNumber
     if depth == 0 or board.is_game_over():
-        return evaluate_board(board)
+        return evaluate_board(board, playing_as_white)
 
     if maximizing_player:
         max_eval = float('-inf')

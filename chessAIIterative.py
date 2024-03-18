@@ -164,102 +164,85 @@ def evaluate_board(board, playing_as_white):
                 score -= VALUE[piece_type_at(square)]
                 score -= PIECE_SQUARE[piece_type_at(square)][63-square] 
         return color_correction * score
+    
+def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
 
-def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white, move_OG):
-    global moveNumber
+    if depth == 0 or board.is_game_over():
+        score = evaluate_board(board, playing_as_white)
+        return score
+    
     transposition_key = computeHashFromFEN(board.fen(), zTable)
-    # Check if the board position is already evaluated at this depth and for this player
+    
     if transposition_key in transposition_table:
         entry = transposition_table[transposition_key]
-        if 'depth' in entry:
-            if entry["depth"] >= depth:
-                if entry["flag"] == "exact":
-                    return entry["score"]
-                elif entry["flag"] == "lowerbound" and entry["score"] > alpha:
-                    alpha = entry["score"]
-                elif entry["flag"] == "upperbound" and entry["score"] < beta:
-                    beta = entry["score"]
-                if alpha >= beta:
-                    return entry["score"]
     else:
         transposition_table[transposition_key] = {}
         entry = transposition_table[transposition_key]
 
-    if depth == 0 or board.is_game_over():
-        score = evaluate_board(board, playing_as_white)
-        flag = "exact"
-        entry.update({"score": score, "depth": depth, "flag": flag, move_OG: score})
-        return score
-    
+    global moveNumber
+    moves = order_moves(board, maximizing_player)
+
     if maximizing_player:
         max_eval = float('-inf')
-        moves = order_moves(board, False, entry)
-
         for move in moves:
             moveNumber += 1
             board.push(move)
-            eval = minimax(board, depth - 1, alpha, beta, False, playing_as_white, move)
+            eval = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
             board.pop()
             max_eval = max(max_eval, eval)
             alpha = max(alpha, eval)
-            entry[move] = eval
             if beta <= alpha:
                 break
-
-        flag = "exact" if max_eval <= alpha else "lowerbound"
-        entry.update({"score": max_eval, "depth": depth, "flag": flag})
-        return max_eval
-    
+        score = max_eval
     else:
         min_eval = float('inf')
-        moves = order_moves(board, True, entry)
-
         for move in moves:
             moveNumber += 1
             board.push(move)
-            eval = minimax(board, depth - 1, alpha, beta, True, playing_as_white, move)
+            eval = minimax(board, depth - 1, alpha, beta, True, playing_as_white)
             board.pop()
             min_eval = min(min_eval, eval)
             beta = min(beta, eval)
-            entry[move] = eval
             if beta <= alpha:
                 break
+        score = min_eval
 
-        flag = "exact" if min_eval >= beta else "upperbound"
-        entry.update({"score": min_eval, "depth": depth, "flag": flag})
-        return min_eval
+    entry.update({move: depth+1})
     
-def order_moves(board, maximizing_player, entry):
+    return score
+    
+def order_moves(board, maximizing_player):
     moves = board.legal_moves
+    transposition_key = computeHashFromFEN(board.fen(), zTable)
+    entry = transposition_table[transposition_key]
     scored_moves = []
 
     for move in moves:
+        
+        score = 0
+        move_from = move.from_square
+        move_to = move.to_square
+        
+        if board.is_capture(move) and not board.is_en_passant(move):
+            score += 10 + (VALUE[board.piece_type_at(move_to)] - VALUE[board.piece_type_at(move_from)]) / 100
+
+        if maximizing_player:
+            score += PIECE_SQUARE[board.piece_type_at(move_from)][move_to] - PIECE_SQUARE[board.piece_type_at(move_from)][move_from]
+        else:
+            score += PIECE_SQUARE[board.piece_type_at(move_from)][63-move_to] - PIECE_SQUARE[board.piece_type_at(move_from)][63-move_from]
+
+        if move.promotion:
+            score += 800
+        score += board.gives_check(move)*10
+
         if move in entry:
-            score = entry[move]
-
-        else:    
-            score = 0
-            move_from = move.from_square
-            move_to = move.to_square
-            
-            if board.is_capture(move) and not board.is_en_passant(move):
-                score += 10 + (VALUE[board.piece_type_at(move_to)] - VALUE[board.piece_type_at(move_from)]) / 100
-
-            if maximizing_player:
-                score += PIECE_SQUARE[board.piece_type_at(move_from)][move_to] - PIECE_SQUARE[board.piece_type_at(move_from)][move_from]
-            else:
-                score += PIECE_SQUARE[board.piece_type_at(move_from)][63-move_to] - PIECE_SQUARE[board.piece_type_at(move_from)][63-move_from]
-
-            if move.promotion:
-                score += 800
-            score += board.gives_check(move)*10
+            score += 10
 
         scored_moves.append((score, move))
     return [move for _, move in sorted(scored_moves, reverse=True, key=lambda x: x[0])]
 
 def find_best_move_iterative(board, max_depth, playing_as_white):
-    global transposition_table
-    transposition_table = {}
+
     global moveNumber
     moveNumber = 0
     alpha = float('-inf')
@@ -269,15 +252,13 @@ def find_best_move_iterative(board, max_depth, playing_as_white):
     if transposition_key not in transposition_table:
         transposition_table[transposition_key] = {}
 
-    entry = transposition_table[transposition_key]
-
     for depth in range(1, max_depth + 1):
         max_eval = float('-inf')
-        moves = order_moves(board, True, entry)
+        moves = order_moves(board, True)
 
         for move in moves:
             board.push(move)
-            evaluation = minimax(board, depth - 1, alpha, beta, False, playing_as_white, move)
+            evaluation = minimax(board, depth - 1, alpha, beta, False, playing_as_white)
             board.pop()
 
             if evaluation > max_eval:
@@ -285,7 +266,6 @@ def find_best_move_iterative(board, max_depth, playing_as_white):
                 best_move = move
 
             moveNumber += 1
-            entry[move] = evaluation
 
     print(f"Move number: {moveNumber}, move: {best_move}, score {max_eval}")
     return best_move

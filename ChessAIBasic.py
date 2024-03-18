@@ -81,7 +81,7 @@ VALUE = {
 }
 
 
-def evaluate_board(board):
+def evaluate_board(board, playing_as_white):
         """
         Evaluates the value of the board based on fixed piece valuations
         """
@@ -94,6 +94,8 @@ def evaluate_board(board):
         piece_type_at = board.piece_type_at
         color_at = board.color_at
         is_white = chess.WHITE
+
+        color_correction = 1 if playing_as_white else -1
         # Giving value to material left and placement on the board
         for square in piece_map:
             if color_at(square) == is_white:
@@ -102,7 +104,7 @@ def evaluate_board(board):
             else:
                 score -= VALUE[piece_type_at(square)]
                 score -= PIECE_SQUARE[piece_type_at(square)][63-square] 
-        return score
+        return color_correction * score
 
 
 def minimax(board, depth, alpha, beta, maximizing_player, playing_as_white):
